@@ -16,5 +16,8 @@
     "url": "https://github.com/ramil290989/frontend-project-46/issues"
   },
   "homepage": "https://github.com/ramil290989/frontend-project-46#readme",
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "commander": "^5.1.0"
+  }
 }
