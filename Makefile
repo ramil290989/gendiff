@@ -1,6 +1,9 @@
 install: #первый запуск
 	npm ci
 
+test:
+	npm test
+
 gendiff: 
 	node bin/gendiff.js
 
