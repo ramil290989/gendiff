@@ -1,11 +1,19 @@
 import _ from 'lodash';
 import fs from 'fs';
+import path from 'path';
+import yaml from 'js-yaml';
 
 
-const getFileData = (pathToFile) => {
-  const data = fs.readFileSync(pathToFile, 'utf-8');
+const parsers = (pathToFile) => {
+  if (path.extname(pathToFile) === '.json') {
+    const data = fs.readFileSync(pathToFile, 'utf-8');
   return JSON.parse(data);
-};
+  }
+  if (path.extname(pathToFile) === '.yaml' || path.extname(pathToFile) === '.yml') {
+    const data = fs.readFileSync(pathToFile, 'utf-8');
+    return yaml.load(data);
+  }
+}
 
 const getKeys = (file1, file2) => {
   const keysFile1 = Object.keys(file1);
@@ -18,8 +26,8 @@ const getKeys = (file1, file2) => {
 };
 
 const genDiff = (file1, file2) => {
-  file1 = getFileData(file1);
-  file2 = getFileData(file2);
+  file1 = parsers(file1);
+  file2 = parsers(file2);
   const keys = getKeys(file1, file2);
   let diff = keys.reduce((str, key) => {
     if (Object.keys(file1).includes(key)) {
@@ -43,3 +51,4 @@ const genDiff = (file1, file2) => {
 };
 
 export default genDiff;
+
