@@ -2,12 +2,13 @@ import _ from 'lodash';
 import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
+import stylish from './formatters/stylish.js';
 
 
 const parsers = (pathToFile) => {
   if (path.extname(pathToFile) === '.json') {
     const data = fs.readFileSync(pathToFile, 'utf-8');
-  return JSON.parse(data);
+    return JSON.parse(data);
   }
   if (path.extname(pathToFile) === '.yaml' || path.extname(pathToFile) === '.yml') {
     const data = fs.readFileSync(pathToFile, 'utf-8');
@@ -15,9 +16,9 @@ const parsers = (pathToFile) => {
   }
 }
 
-const getKeys = (file1, file2) => {
-  const keysFile1 = Object.keys(file1);
-  const keysFile2 = Object.keys(file2);
+const getKeys = (file1Parse, file2Parse) => {
+  const keysFile1 = Object.keys(file1Parse);
+  const keysFile2 = Object.keys(file2Parse);
   let keys = _.sortBy([...keysFile1, ...keysFile2]);
   keys = keys.filter((item, index) => {
     return keys.indexOf(item) === index;
@@ -25,29 +26,47 @@ const getKeys = (file1, file2) => {
   return keys;
 };
 
-const genDiff = (file1, file2) => {
-  file1 = parsers(file1);
-  file2 = parsers(file2);
-  const keys = getKeys(file1, file2);
-  let diff = keys.reduce((str, key) => {
-    if (Object.keys(file1).includes(key)) {
-      if (Object.keys(file2).includes(key)) {
-        if (file1[key] === file2[key]) {
-          str = `  ${str}\n    ${key}: ${file1[key]}`;
+const makeDiff = (file1Parse, file2Parse) => {
+  const keys = getKeys(file1Parse, file2Parse);
+  let diff = keys.reduce((obj, key) => {
+    let objKey = '';
+    if (typeof file1Parse[key] === 'object' && typeof file2Parse[key] === 'object') {
+      objKey = `  ${key}`;
+      obj[objKey] = makeDiff(file1Parse[key], file2Parse[key]);
+    } else {
+      if (Object.keys(file1Parse).includes(key)) {
+        if (Object.keys(file2Parse).includes(key)) {
+          if (file1Parse[key] === file2Parse[key]) {
+            objKey = `  ${key}`;
+            obj[objKey] = file1Parse[key];
+          } else {
+            objKey = `- ${key}`;
+            obj[objKey] = file1Parse[key];
+            objKey = `+ ${key}`;
+            obj[objKey] = file2Parse[key];
+          }
         } else {
-          str = `  ${str}\n  - ${key}: ${file1[key]}`;
-          str = `  ${str}\n  + ${key}: ${file2[key]}`;
+          objKey = `- ${key}`;
+          obj[objKey] = file1Parse[key];
         }
       } else {
-        str = `  ${str}\n  - ${key}: ${file1[key]}`;
+        objKey = `+ ${key}`;
+        obj[objKey] = file2Parse[key];
       }
-    } else {
-      str = `  ${str}\n  + ${key}: ${file2[key]}`;
     }
-    return str;
-  }, '');
-  diff = `{${diff}\n}`;
+    return obj;
+  }, {});
   return diff;
+}
+
+const genDiff = (file1, file2, format = 'stylish') => {
+  let file1Parse = parsers(file1);
+  let file2Parse = parsers(file2);
+  let result = makeDiff(file1Parse, file2Parse);
+  switch (format) {
+    case 'stylish':
+      return stylish(result);
+  }
 };
 
 export default genDiff;
