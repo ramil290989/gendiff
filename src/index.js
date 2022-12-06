@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
 import stylish from './formatters/stylish.js';
+import plain from './formatters/plain.js';
 
 
 const parsers = (pathToFile) => {
@@ -26,46 +27,106 @@ const getKeys = (file1Parse, file2Parse) => {
   return keys;
 };
 
-const makeDiff = (file1Parse, file2Parse) => {
-  const keys = getKeys(file1Parse, file2Parse);
-  let diff = keys.reduce((obj, key) => {
-    let objKey = '';
-    if (typeof file1Parse[key] === 'object' && typeof file2Parse[key] === 'object') {
-      objKey = `  ${key}`;
-      obj[objKey] = makeDiff(file1Parse[key], file2Parse[key]);
-    } else {
-      if (Object.keys(file1Parse).includes(key)) {
-        if (Object.keys(file2Parse).includes(key)) {
-          if (file1Parse[key] === file2Parse[key]) {
-            objKey = `  ${key}`;
-            obj[objKey] = file1Parse[key];
-          } else {
-            objKey = `- ${key}`;
-            obj[objKey] = file1Parse[key];
-            objKey = `+ ${key}`;
-            obj[objKey] = file2Parse[key];
-          }
-        } else {
-          objKey = `- ${key}`;
-          obj[objKey] = file1Parse[key];
-        }
-      } else {
-        objKey = `+ ${key}`;
-        obj[objKey] = file2Parse[key];
-      }
-    }
-    return obj;
-  }, {});
-  return diff;
-}
+const genDiffTree = (file1 = {}, file2 = {}) => {
+	const withoutMarkers = (file1, file2) => {
+		let keys = getKeys(file1, file2);
+		let resultWithoutMarkers = keys.reduce((array, key) => {
+			let item = {};
+			if (typeof file2[key] !== 'object' && typeof file1[key] !== 'object') {
+				if (file2 === 0) {
+					item = {key: key, value: file1[key], status: 'nomod'};
+					array.push(item);
+					return array;
+				} else {
+					item = {key: key, value: file2[key], status: 'nomod'};
+					array.push(item);
+					return array;
+				}
+			} else {
+				if (file2 === 0) {
+					item = {key: key, value: withoutMarkers(file1[key], 0), status: 'nomod'};
+					array.push(item);
+					return array;
+				} else {
+					item = {key: key, value: withoutMarkers(0, file2[key]), status: 'nomod'};
+					array.push(item);
+					return array;
+				}
+			}
+		}, []);
+		return resultWithoutMarkers;
+	};
+
+	const withMarkers = (file1 = {}, file2 = {}) => {
+		let keys = getKeys(file1, file2);
+		let resultWithMarkers = keys.reduce((array, key) => {
+			let item = {};
+			if (Object.keys(file1).includes(key)) {
+				if (Object.keys(file2).includes(key)) {
+					if (typeof file1[key] !== 'object' && typeof file1[key] !== 'object') {
+						if (file1[key] === file2[key]) {
+							item = {key: key, value: file1[key], status: 'nomod'};
+							array.push(item);
+							return array;
+						} else {
+							item = {key: key, value: file1[key], status: 'changed_from'};
+							array.push(item);
+							item = {key: key, value: file2[key], status: 'changed_to'};
+							array.push(item);
+							return array;
+						}
+					} else if (typeof file1[key] === 'object' && typeof file2[key] !== 'object') {
+						item = {key: key, value: withoutMarkers(file1[key], 0), status: 'changed_from'};
+						array.push(item);
+						item = {key: key, value: file2[key], status: 'changed_to'};
+						array.push(item);
+						return array;
+					} else if (typeof file1[key] !== 'object' && typeof file2[key] === 'object') {
+						item = {key: key, value: file1[key], status: 'changed_from'};
+						array.push(item);
+						item = {key: key, value: withoutMarkers(0, file2[key]), status: 'changed_to'};
+						array.push(item);
+						return array;
+					} else {
+						item = {key: key, value: withMarkers(file1[key], file2[key]), status: 'nomod'};
+						array.push(item);
+						return array;
+					}
+				} 
+				if (typeof file1[key] !== 'object') {
+					item = {key: key, value: file1[key], status: 'deleted'};
+					array.push(item);
+					return array;
+				} else {
+					item = {key: key, value: withoutMarkers(file1[key], 0), status: 'deleted'};
+				array.push(item);
+				return array;
+				}
+			}
+			if (typeof file1[key] !== 'object' && typeof file2[key] !== 'object') {
+				item = {key: key, value: file2[key], status: 'added'};
+				array.push(item);
+				return array;
+			} else {
+				item = {key: key, value: withoutMarkers(0, file2[key]), status: 'added'};
+				array.push(item);
+				return array;
+			}
+		}, []);
+		return resultWithMarkers;
+	};
+	return withMarkers(file1, file2);
+};
 
 const genDiff = (file1, file2, format = 'stylish') => {
   let file1Parse = parsers(file1);
   let file2Parse = parsers(file2);
-  let result = makeDiff(file1Parse, file2Parse);
+  let result = genDiffTree(file1Parse, file2Parse);
   switch (format) {
     case 'stylish':
       return stylish(result);
+		case 'plain':
+			return plain(result);
   }
 };
 
