@@ -192,5 +192,5 @@ test('stylish hexlet yml', () => {
       + type: bar
     }
     language: js
-}`,);
+}`);
 });
