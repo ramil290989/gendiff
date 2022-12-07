@@ -1,4 +1,4 @@
-import genDiff from '../src/index.js';
+import genDiff from '../index.js';
 
 test('gendiff stylish json-json', () => {
   expect(genDiff('./__fixtures__/file1.json', './__fixtures__/file2.json',),).toBe(
