@@ -4,6 +4,7 @@ import path from 'path';
 import yaml from 'js-yaml';
 import stylish from './formatters/stylish.js';
 import plain from './formatters/plain.js';
+import json from './formatters/json.js';
 
 
 const parsers = (pathToFile) => {
@@ -127,6 +128,10 @@ const genDiff = (file1, file2, format = 'stylish') => {
       return stylish(result);
 		case 'plain':
 			return plain(result);
+		case 'json':
+			return json(result);
+		default:
+			return stylish(result);
   }
 };
 
