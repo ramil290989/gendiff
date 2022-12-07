@@ -64,7 +64,7 @@ const genDiffTree = (file1 = {}, file2 = {}) => {
 			let item = {};
 			if (Object.keys(file1).includes(key)) {
 				if (Object.keys(file2).includes(key)) {
-					if (typeof file1[key] !== 'object' && typeof file1[key] !== 'object') {
+					if (typeof file1[key] !== 'object' && typeof file2[key] !== 'object') {
 						if (file1[key] === file2[key]) {
 							item = {key: key, value: file1[key], status: 'nomod'};
 							array.push(item);
@@ -77,15 +77,16 @@ const genDiffTree = (file1 = {}, file2 = {}) => {
 							return array;
 						}
 					} else if (typeof file1[key] === 'object' && typeof file2[key] !== 'object') {
-						item = {key: key, value: withoutMarkers(file1[key], 0), status: 'changed_from'};
+						item = file1[key] === null ? {key: key, value: file1[key], status: 'changed_from'} : {key: key, value: withoutMarkers(file1[key], 0), status: 'changed_from'};
 						array.push(item);
 						item = {key: key, value: file2[key], status: 'changed_to'};
 						array.push(item);
 						return array;
-					} else if (typeof file1[key] !== 'object' && typeof file2[key] === 'object') {
+					} else 
+					if (typeof file1[key] !== 'object' && typeof file2[key] === 'object') {
 						item = {key: key, value: file1[key], status: 'changed_from'};
 						array.push(item);
-						item = {key: key, value: withoutMarkers(0, file2[key]), status: 'changed_to'};
+						item = file2[key] === null ? {key: key, value: file2[key], status: 'changed_to'} : {key: key, value: withoutMarkers(0, file2[key]), status: 'changed_to'};
 						array.push(item);
 						return array;
 					} else {
