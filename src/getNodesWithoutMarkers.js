@@ -9,30 +9,24 @@ const getNodesWithoutMarkers = (file1Parse, file2Parse) => {
         nodeItem.key = key;
         nodeItem.value = file1Parse[key];
         nodeItem.status = 'nomod';
-        node.push(nodeItem);
-        return node;
       } else {
         nodeItem.key = key;
         nodeItem.value = file2Parse[key];
         nodeItem.status = 'nomod';
-        node.push(nodeItem);
-        return node;
       }
     } else {
       if (file2Parse === 0) {
         nodeItem.key = key;
         nodeItem.value = getNodesWithoutMarkers(file1Parse[key], 0);
         nodeItem.status = 'nomod';
-        node.push(nodeItem);
-        return node;
       } else {
         nodeItem.key = key;
         nodeItem.value = getNodesWithoutMarkers(0, file2Parse[key]);
         nodeItem.status = 'nomod';
-        node.push(nodeItem);
-        return node;
       }
     }
+    node.push(nodeItem);
+    return node;
   }, []);
   return nodesWithoutMarkers;
 };
