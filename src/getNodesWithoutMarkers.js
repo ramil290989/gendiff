@@ -3,7 +3,7 @@ import getTreeKeys from './getTreeKeys.js';
 const getNodesWithoutMarkers = (file1Parse, file2Parse) => {
   const keys = getTreeKeys(file1Parse, file2Parse);
   const nodesWithoutMarkers = keys.reduce((node, key) => {
-    const nodeItem = {key: '', value: '', status: ''};
+    const nodeItem = { key: '', value: '', status: '' };
     if (typeof file2Parse[key] !== 'object' && typeof file1Parse[key] !== 'object') {
       if (file2Parse === 0) {
         nodeItem.key = key;
