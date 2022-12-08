@@ -1,22 +1,8 @@
 import _ from 'lodash';
-import fs from 'fs';
-import path from 'path';
-import yaml from 'js-yaml';
+import parser from './src/parser.js';
 import stylish from './src/formatters/stylish.js';
 import plain from './src/formatters/plain.js';
 import json from './src/formatters/json.js';
-
-
-const parsers = (pathToFile) => {
-  if (path.extname(pathToFile) === '.json') {
-    const data = fs.readFileSync(pathToFile, 'utf-8');
-    return JSON.parse(data);
-  }
-  if (path.extname(pathToFile) === '.yaml' || path.extname(pathToFile) === '.yml') {
-    const data = fs.readFileSync(pathToFile, 'utf-8');
-    return yaml.load(data);
-  }
-}
 
 const getKeys = (file1Parse, file2Parse) => {
   const keysFile1 = Object.keys(file1Parse);
@@ -121,8 +107,8 @@ const genDiffTree = (file1 = {}, file2 = {}) => {
 };
 
 const genDiff = (file1, file2, format = 'stylish') => {
-  let file1Parse = parsers(file1);
-  let file2Parse = parsers(file2);
+  let file1Parse = parser(file1);
+  let file2Parse = parser(file2);
   let result = genDiffTree(file1Parse, file2Parse);
   switch (format) {
     case 'stylish':
