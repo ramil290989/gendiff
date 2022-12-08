@@ -1,22 +1,13 @@
 import _ from 'lodash';
+import getTeeKeys from './src/getTreeKeys.js';
 import parser from './src/parser.js';
 import stylish from './src/formatters/stylish.js';
 import plain from './src/formatters/plain.js';
 import json from './src/formatters/json.js';
 
-const getKeys = (file1Parse, file2Parse) => {
-  const keysFile1 = Object.keys(file1Parse);
-  const keysFile2 = Object.keys(file2Parse);
-  let keys = _.sortBy([...keysFile1, ...keysFile2]);
-  keys = keys.filter((item, index) => {
-    return keys.indexOf(item) === index;
-  });
-  return keys;
-};
-
 const genDiffTree = (file1 = {}, file2 = {}) => {
 	const withoutMarkers = (file1, file2) => {
-		let keys = getKeys(file1, file2);
+		let keys = getTeeKeys(file1, file2);
 		let resultWithoutMarkers = keys.reduce((array, key) => {
 			let item = {};
 			if (typeof file2[key] !== 'object' && typeof file1[key] !== 'object') {
@@ -45,7 +36,7 @@ const genDiffTree = (file1 = {}, file2 = {}) => {
 	};
 
 	const withMarkers = (file1 = {}, file2 = {}) => {
-		let keys = getKeys(file1, file2);
+		let keys = getTeeKeys(file1, file2);
 		let resultWithMarkers = keys.reduce((array, key) => {
 			let item = {};
 			if (Object.keys(file1).includes(key)) {

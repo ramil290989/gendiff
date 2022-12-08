@@ -12,7 +12,7 @@ const parser = (pathToFile) => {
       return yaml.load(fs.readFileSync(pathToFile, 'utf-8'));
     default:
       throw new Error('неверный формат файла');
-  };
-}
+  }
+};
 
 export default parser;
