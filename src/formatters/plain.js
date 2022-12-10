@@ -1,47 +1,39 @@
 const getProperty = (property, key) => {
-	let result = `${property}.${key}`;
-	result = result[0] === '.' ? result.slice(1) : result;
-	return result;
+	if (`${property}.${key}`[0] === '.') {
+    return `${property}.${key}`.slice(1);
+  }
+  return `${property}.${key}`;
 };
-
 
 const getValue = (value) => {
-	let result = '';
 	switch (typeof value) {
 		case 'object':
-			result = value === null ? `${value}` : `[complex value]`;
-			break;
+			return value === null ? `${value}` : `[complex value]`;
 		case 'string':
-			result = `'${value}'`;
-			break;
+			return `'${value}'`;
 		default:
-			result = `${value}`;
+			return `${value}`;
 	}
-	return result;
 };
-
 
 const plain = (diffTree) => {
 	const makeString = (diffTree, property = '') => {
-		let string = diffTree.reduce((line, item, index) => {
+		const string = diffTree.reduce((line, item, index) => {
 			if (Array.isArray(item.value) && item.status === 'nomod') {
-				let propertyRecursion = getProperty(property, item.key);
-				line =  `${line}${makeString(item.value, propertyRecursion)}`;
-			} else {
-				let propertyLine = getProperty(property, item.key);
-				switch (item.status) {
-					case 'added':
-						line = `${line}Property '${propertyLine}' was added with value: ${getValue(item.value)}\n`;
-						break;
-					case 'deleted':
-						line = `${line}Property '${propertyLine}' was removed\n`;
-						break;
-					case 'changed_from':
-						line = `${line}Property '${propertyLine}' was updated. From ${getValue(item.value)} to ${getValue(diffTree[index+1].value)}\n`;
-						break;
-				}
+				const propertyRecursion = getProperty(property, item.key);
+        return line = `${line}${makeString(item.value, propertyRecursion)}`;
 			}
-			return line;
+      const propertyLine = getProperty(property, item.key);
+      switch (item.status) {
+        case 'added':
+          return line = `${line}Property '${propertyLine}' was added with value: ${getValue(item.value)}\n`;
+        case 'deleted':
+          return line = `${line}Property '${propertyLine}' was removed\n`;
+        case 'changed_from':
+          return line = `${line}Property '${propertyLine}' was updated. From ${getValue(item.value)} to ${getValue(diffTree[index+1].value)}\n`;
+        default:
+          return line;
+      }
 		}, '');
 		return string;
 	}
