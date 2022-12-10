@@ -40,4 +40,5 @@ const plain = (diffTree) => {
 	return makeString(diffTree).trim();
 };
 
+
 export default plain;
