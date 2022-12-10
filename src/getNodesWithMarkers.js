@@ -12,29 +12,30 @@ const getNodesWithMarkers = (file1Parse, file2Parse) => {
           }
           return [
             { key, value: file1Parse[key], status: 'changed_from' },
-            { key, value: file2Parse[key], status: 'changed_to' }
+            { key, value: file2Parse[key], status: 'changed_to' },
           ];
-        } else if (typeof file1Parse[key] === 'object' && typeof file2Parse[key] !== 'object') {
+        }
+        if (typeof file1Parse[key] === 'object' && typeof file2Parse[key] !== 'object') {
           if (file1Parse[key] === null) {
             return [
               { key, value: file1Parse[key], status: 'changed_from' },
-              { key, value: file2Parse[key], status: 'changed_to' }
+              { key, value: file2Parse[key], status: 'changed_to' },
             ];
           }
           return [
             { key, value: getNodesWithoutMarkers(file1Parse[key], 0), status: 'changed_from' },
-            { key, value: file2Parse[key], status: 'changed_to' }
+            { key, value: file2Parse[key], status: 'changed_to' },
           ];
         } else if (typeof file1Parse[key] !== 'object' && typeof file2Parse[key] === 'object') {
           if (file2Parse[key] === null) {
             return [
               { key, value: file1Parse[key], status: 'changed_from' },
-              { key, value: file2Parse[key], status: 'changed_to' }
+              { key, value: file2Parse[key], status: 'changed_to' },
             ];
           }
           return [
             { key, value: file1Parse[key], status: 'changed_from' },
-            { key, value: getNodesWithoutMarkers(0, file2Parse[key]), status: 'changed_to' }
+            { key, value: getNodesWithoutMarkers(0, file2Parse[key]), status: 'changed_to' },
           ];
         } else {
           return { key, value: getNodesWithMarkers(file1Parse[key], file2Parse[key]), status: 'nomod' };
