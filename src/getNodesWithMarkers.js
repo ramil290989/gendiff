@@ -3,104 +3,59 @@ import getNodesWithoutMarkers from './getNodesWithoutMarkers.js';
 
 const getNodesWithMarkers = (file1Parse, file2Parse) => {
   const keys = getTreeKeys(file1Parse, file2Parse);
-  const nodesWithMarkers = keys.reduce((node, key) => {
-    const nodeItem = {};
+  const nodesWithMarkers = keys.map((key) => {
     if (Object.keys(file1Parse).includes(key)) {
       if (Object.keys(file2Parse).includes(key)) {
         if (typeof file1Parse[key] !== 'object' && typeof file2Parse[key] !== 'object') {
           if (file1Parse[key] === file2Parse[key]) {
-            nodeItem.key = key;
-            nodeItem.value = file1Parse[key];
-            nodeItem.status = 'nomod';
-            node.push(nodeItem);
-            return node;
+            return { key, value: file1Parse[key], status: 'nomod' };
           } else {
-            nodeItem.key = key;
-            nodeItem.value = file1Parse[key];
-            nodeItem.status = 'changed_from';
-            node.push(nodeItem);
-            const nodeItemChangeTo = {};
-            nodeItemChangeTo.key = key;
-            nodeItemChangeTo.value = file2Parse[key];
-            nodeItemChangeTo.status = 'changed_to';
-            node.push(nodeItemChangeTo);
-            return node;
+            return [
+              { key, value: file1Parse[key], status: 'changed_from' },
+              { key, value: file2Parse[key], status: 'changed_to' }
+            ];
           }
         } else if (typeof file1Parse[key] === 'object' && typeof file2Parse[key] !== 'object') {
           if (file1Parse[key] === null) {
-            nodeItem.key = key;
-            nodeItem.value = file1Parse[key];
-            nodeItem.status = 'changed_from';
-            node.push(nodeItem);
+            return [
+              { key, value: file1Parse[key], status: 'changed_from' },
+              { key, value: file2Parse[key], status: 'changed_to' }
+            ];
           } else {
-            nodeItem.key = key;
-            nodeItem.value = getNodesWithoutMarkers(file1Parse[key], 0);
-            nodeItem.status = 'changed_from';
-            node.push(nodeItem);
+            return [
+              { key, value: getNodesWithoutMarkers(file1Parse[key], 0), status: 'changed_from' },
+              { key, value: file2Parse[key], status: 'changed_to' }
+            ];
           }
-          const nodeItemChangeTo = {};
-          nodeItemChangeTo.key = key;
-          nodeItemChangeTo.value = file2Parse[key];
-          nodeItemChangeTo.status = 'changed_to';
-          node.push(nodeItemChangeTo);
-          return node;
         } else if (typeof file1Parse[key] !== 'object' && typeof file2Parse[key] === 'object') {
-          nodeItem.key = key;
-          nodeItem.value = file1Parse[key];
-          nodeItem.status = 'changed_from';
-          node.push(nodeItem);
           if (file2Parse[key] === null) {
-            const nodeItemChangeTo = {};
-            nodeItemChangeTo.key = key;
-            nodeItemChangeTo.value = file2Parse[key];
-            nodeItemChangeTo.status = 'changed_to';
-            node.push(nodeItemChangeTo);
-            return node;
+            return [
+              { key, value: file1Parse[key], status: 'changed_from' },
+              { key, value: file2Parse[key], status: 'changed_to' }
+            ];
           } else {
-            const nodeItemChangeTo = {};
-            nodeItemChangeTo.key = key;
-            nodeItemChangeTo.value = getNodesWithoutMarkers(0, file2Parse[key]);
-            nodeItemChangeTo.status = 'changed_to';
-            node.push(nodeItemChangeTo);
-            return node;
+            return [
+              { key, value: file1Parse[key], status: 'changed_from' },
+              { key, value: getNodesWithoutMarkers(0, file2Parse[key]), status: 'changed_to' }
+            ];
           }
         } else {
-          nodeItem.key = key;
-          nodeItem.value = getNodesWithMarkers(file1Parse[key], file2Parse[key]);
-          nodeItem.status = 'nomod';
-          node.push(nodeItem);
-          return node;
+          return { key, value: getNodesWithMarkers(file1Parse[key], file2Parse[key]), status: 'nomod' };
         }
       } 
       if (typeof file1Parse[key] !== 'object') {
-        nodeItem.key = key;
-        nodeItem.value = file1Parse[key];
-        nodeItem.status = 'deleted';
-        node.push(nodeItem);
-        return node;
+        return { key, value: file1Parse[key], status: 'deleted' };
       } else {
-        nodeItem.key = key;
-        nodeItem.value = getNodesWithoutMarkers(file1Parse[key], 0);
-        nodeItem.status = 'deleted';
-        node.push(nodeItem);
-        return node;
+        return { key, value: getNodesWithoutMarkers(file1Parse[key], 0), status: 'deleted' };
       }
     }
     if (typeof file1Parse[key] !== 'object' && typeof file2Parse[key] !== 'object') {
-      nodeItem.key = key;
-      nodeItem.value = file2Parse[key];
-      nodeItem.status = 'added';
-      node.push(nodeItem);
-      return node;
-    } else {				
-      nodeItem.key = key;
-      nodeItem.value = getNodesWithoutMarkers(0, file2Parse[key]);
-      nodeItem.status = 'added';
-      node.push(nodeItem);
-      return node;
+      return { key, value: file2Parse[key], status: 'added' };
+    } else {
+      return { key, value: getNodesWithoutMarkers(0, file2Parse[key]), status: 'added' };
     }
-  }, []);
-  return nodesWithMarkers;
+  });
+  return nodesWithMarkers.flat();
 };
 
 export default getNodesWithMarkers;
