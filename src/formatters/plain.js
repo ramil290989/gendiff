@@ -1,28 +1,28 @@
 const getProperty = (property, key) => {
-	if (`${property}.${key}`[0] === '.') {
+  if (`${property}.${key}`[0] === '.') {
     return `${property}.${key}`.slice(1);
   }
   return `${property}.${key}`;
 };
 
 const getValue = (value) => {
-	switch (typeof value) {
-		case 'object':
-			return value === null ? `${value}` : `[complex value]`;
-		case 'string':
-			return `'${value}'`;
-		default:
-			return `${value}`;
-	}
+  switch (typeof value) {
+    case 'object':
+      return value === null ? `${value}` : `[complex value]`;
+    case 'string':
+      return `'${value}'`;
+    default:
+      return `${value}`;
+  }
 };
 
 const plain = (diffTree) => {
-	const makeString = (diffTree, property = '') => {
-		const string = diffTree.reduce((line, item, index) => {
-			if (Array.isArray(item.value) && item.status === 'nomod') {
-				const propertyRecursion = getProperty(property, item.key);
+  const makeString = (diffTree, property = '') => {
+    const string = diffTree.reduce((line, item, index) => {
+      if (Array.isArray(item.value) && item.status === 'nomod') {
+        const propertyRecursion = getProperty(property, item.key);
         return line = `${line}${makeString(item.value, propertyRecursion)}`;
-			}
+      }
       const propertyLine = getProperty(property, item.key);
       switch (item.status) {
         case 'added':
@@ -34,10 +34,10 @@ const plain = (diffTree) => {
         default:
           return line;
       }
-		}, '');
-		return string;
-	}
-	return makeString(diffTree).trim();
+    }, '');
+    return string;
+  }
+  return makeString(diffTree).trim();
 };
 
 export default plain;
