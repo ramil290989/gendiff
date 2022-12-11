@@ -17,7 +17,7 @@ const getValue = (value) => {
 };
 
 const makeString = (diffTree, property = '') => {
-  const string = diffTree.map((item, index) => {
+  const result = diffTree.map((item, index) => {
     if (Array.isArray(item.value) && item.status === 'nomod') {
       const propertyRecursion = getProperty(property, item.key);
       return `${makeString(item.value, propertyRecursion)}`;
@@ -31,12 +31,12 @@ const makeString = (diffTree, property = '') => {
       case 'changed_from':
         return `Property '${propertyLine}' was updated. From ${getValue(item.value)} to ${getValue(diffTree[index + 1].value)}`;
       default:
-        return ``;
+        return '';
     }
   })
     .filter((item) => item !== '')
     .join('\n');
-  return string;
+  return result;
 };
 
 const plain = (diffTree) => makeString(diffTree);
