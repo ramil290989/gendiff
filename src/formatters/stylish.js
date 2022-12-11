@@ -1,32 +1,27 @@
 const stylish = (diffTree) => {
-  const makeString = (diffTree, rep = 1) => {
-    rep += 1;
+  const makeString = (diffTree, rep = 2) => {
+    const count = rep + 4;
     const lines = diffTree.map((item) => {
-      if (Array.isArray(item.value)) {
-        rep += 3;
-        item.value = `${makeString(item.value, rep)}`;
-        rep -= 3;
-      }
+      const resultValue = Array.isArray(item.value) ? makeString(item.value, count) : item.value;
       switch (item.status) {
         case 'nomod':
-          return `${' '.repeat(rep)}  ${item.key}: ${item.value}`;
+          return `${' '.repeat(rep)}  ${item.key}: ${resultValue}`;
         case 'changed_from':
-          return `${' '.repeat(rep)}- ${item.key}: ${item.value}`;
+          return `${' '.repeat(rep)}- ${item.key}: ${resultValue}`;
         case 'changed_to':
-          return `${' '.repeat(rep)}+ ${item.key}: ${item.value}`;
+          return `${' '.repeat(rep)}+ ${item.key}: ${resultValue}`;
         case 'deleted':
-          return `${' '.repeat(rep)}- ${item.key}: ${item.value}`;
+          return `${' '.repeat(rep)}- ${item.key}: ${resultValue}`;
         case 'added':
-          return `${' '.repeat(rep)}+ ${item.key}: ${item.value}`;
+          return `${' '.repeat(rep)}+ ${item.key}: ${resultValue}`;
         default:
           throw new Error('что-то пошло не так');
       }
     })
-      .filter((item) => item !== '')
       .join('\n');
     const result = `{\n${lines}\n${' '.repeat(rep - 2)}}`;
     return result;
-  }
+  };
   return makeString(diffTree);
 };
 
