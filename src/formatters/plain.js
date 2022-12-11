@@ -17,30 +17,28 @@ const getValue = (value) => {
 };
 
 const makeString = (diffTree, property = '') => {
-  const string = diffTree.reduce((line, item, index) => {
+  const string = diffTree.map((item, index) => {
     if (Array.isArray(item.value) && item.status === 'nomod') {
       const propertyRecursion = getProperty(property, item.key);
-      line = `${line}${makeString(item.value, propertyRecursion)}`;
-      return line;
+      return `${makeString(item.value, propertyRecursion)}`;
     }
     const propertyLine = getProperty(property, item.key);
     switch (item.status) {
       case 'added':
-        line = `${line}Property '${propertyLine}' was added with value: ${getValue(item.value)}\n`;
-        return line;
+        return `Property '${propertyLine}' was added with value: ${getValue(item.value)}`;
       case 'deleted':
-        line = `${line}Property '${propertyLine}' was removed\n`;
-        return line;
+        return `Property '${propertyLine}' was removed`;
       case 'changed_from':
-        line = `${line}Property '${propertyLine}' was updated. From ${getValue(item.value)} to ${getValue(diffTree[index + 1].value)}\n`;
-        return line;
+        return `Property '${propertyLine}' was updated. From ${getValue(item.value)} to ${getValue(diffTree[index + 1].value)}`;
       default:
-        return line;
+        return ``;
     }
-  }, '');
+  })
+    .filter((item) => item !== '')
+    .join('\n');
   return string;
-}
+};
 
-const plain = (diffTree) => makeString(diffTree).trim();
+const plain = (diffTree) => makeString(diffTree);
 
 export default plain;
