@@ -1,7 +1,7 @@
 import genDiff from '../index.js';
 
 test('gendiff stylish json-json', () => {
-  expect(genDiff('./__fixtures__/file1.json', './__fixtures__/file2.json')).toBe(
+  expect(genDiff('./__tests__/__fixtures__/file1.json', './__tests__/__fixtures__/file2.json')).toBe(
     `{
   - follow: false
     host: hexlet.io
@@ -14,7 +14,7 @@ test('gendiff stylish json-json', () => {
 });
 
 test('gendiff stylish yaml-yaml', () => {
-  expect(genDiff('./__fixtures__/file1.yaml', './__fixtures__/file2.yml')).toBe(
+  expect(genDiff('./__tests__/__fixtures__/file1.yaml', './__tests__/__fixtures__/file2.yml')).toBe(
     `{
   - follow: false
     host: hexlet.io
@@ -27,7 +27,7 @@ test('gendiff stylish yaml-yaml', () => {
 });
 
 test('gendiff stylish json-yaml', () => {
-  expect(genDiff('./__fixtures__/file1.json', './__fixtures__/file2.yml')).toBe(
+  expect(genDiff('./__tests__/__fixtures__/file1.json', './__tests__/__fixtures__/file2.yml')).toBe(
     `{
   - follow: false
     host: hexlet.io
@@ -40,7 +40,7 @@ test('gendiff stylish json-yaml', () => {
 });
 
 test('gendiff stylish json-tree', () => {
-  expect(genDiff('./__fixtures__/file3.json', './__fixtures__/file4.json')).toBe(
+  expect(genDiff('./__tests__/__fixtures__/file3.json', './__tests__/__fixtures__/file4.json')).toBe(
     `{
     common: {
       + follow: false
@@ -89,7 +89,7 @@ test('gendiff stylish json-tree', () => {
 });
 
 test('gendiff plain json-tree', () => {
-  expect(genDiff('./__fixtures__/file3.json', './__fixtures__/file4.json', 'plain')).toBe(
+  expect(genDiff('./__tests__/__fixtures__/file3.json', './__tests__/__fixtures__/file4.json', 'plain')).toBe(
     `Property 'common.follow' was added with value: false
 Property 'common.setting2' was removed
 Property 'common.setting3' was updated. From true to null
@@ -105,7 +105,7 @@ Property 'group3' was added with value: [complex value]`,
 });
 
 test('plain hexlet json', () => {
-  expect(genDiff('./__fixtures__/file1-hex.json', './__fixtures__/file2-hex.json', 'plain')).toBe(
+  expect(genDiff('./__tests__/__fixtures__/file1-hex.json', './__tests__/__fixtures__/file2-hex.json', 'plain')).toBe(
     `Property 'common.follow' was added with value: false
 Property 'common.setting2' was removed
 Property 'common.setting3' was updated. From true to [complex value]
@@ -129,7 +129,7 @@ Property 'group4.type' was updated. From 'bas' to 'bar'`,
 });
 
 test('stylish hexlet yml', () => {
-  expect(genDiff('./__fixtures__/file1-hex.yml', './__fixtures__/file2-hex.yml')).toBe(`{
+  expect(genDiff('./__tests__/__fixtures__/file1-hex.yml', './__tests__/__fixtures__/file2-hex.yml')).toBe(`{
     common: {
       + follow: false
         setting1: Value 1
