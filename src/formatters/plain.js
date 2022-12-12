@@ -1,10 +1,3 @@
-const getProperty = (property, key) => {
-  if (`${property}.${key}`[0] === '.') {
-    return `${property}.${key}`.slice(1);
-  }
-  return `${property}.${key}`;
-};
-
 const getValue = (value) => {
   switch (typeof value) {
     case 'object':
@@ -17,19 +10,18 @@ const getValue = (value) => {
 };
 
 const makeString = (diffTree, property = '') => {
-  const result = diffTree.map((item, index) => {
+  const result = diffTree.map((item) => {
+    const propertyLine = `${property}.${item.key}`[0] === '.' ? `${property}.${item.key}`.slice(1) : `${property}.${item.key}`;
     if (Array.isArray(item.value) && item.status === 'nomod') {
-      const propertyRecursion = getProperty(property, item.key);
-      return `${makeString(item.value, propertyRecursion)}`;
+      return `${makeString(item.value, propertyLine)}`;
     }
-    const propertyLine = getProperty(property, item.key);
     switch (item.status) {
       case 'added':
         return `Property '${propertyLine}' was added with value: ${getValue(item.value)}`;
       case 'deleted':
         return `Property '${propertyLine}' was removed`;
-      case 'changed_from':
-        return `Property '${propertyLine}' was updated. From ${getValue(item.value)} to ${getValue(diffTree[index + 1].value)}`;
+      case 'changed':
+        return `Property '${propertyLine}' was updated. From ${getValue(item.oldValue)} to ${getValue(item.newValue)}`;
       default:
         return '';
     }
