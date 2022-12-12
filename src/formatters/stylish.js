@@ -2,8 +2,10 @@ const makeString = (diffTree, rep = 2) => {
   const count = rep + 4;
   const lines = diffTree.map((item) => {
     const resultValue = Array.isArray(item.value) ? makeString(item.value, count) : item.value;
-    const resultOldValue = Array.isArray(item.oldValue) ? makeString(item.oldValue, count) : item.oldValue;
-    const resultNewValue = Array.isArray(item.newValue) ? makeString(item.newValue, count) : item.newValue;
+    const resultOldValue = Array.isArray(item.oldValue)
+    ? makeString(item.oldValue, count) : item.oldValue;
+    const resultNewValue = Array.isArray(item.newValue)
+    ? makeString(item.newValue, count) : item.newValue;
     switch (item.status) {
       case 'nomod':
         return `${' '.repeat(rep)}  ${item.key}: ${resultValue}`;

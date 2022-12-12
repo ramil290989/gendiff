@@ -11,13 +11,28 @@ const getNodesWithMarkers = (file1Parse, file2Parse) => {
           if (file1Parse[key] === file2Parse[key]) {
             return { key, value: file1Parse[key], status: 'nomod' };
           }
-          return { key, oldValue: file1Parse[key], newValue: file2Parse[key], status: 'changed' };
+          return {
+            key,
+            oldValue: file1Parse[key],
+            newValue: file2Parse[key],
+            status: 'changed'
+          };
         }
         if (_.isObject(file1Parse[key]) && !_.isObject(file2Parse[key])) {
-          return { key, oldValue: getNodesWithoutMarkers(file1Parse[key]), newValue: file2Parse[key], status: 'changed' };
+          return {
+            key,
+            oldValue: getNodesWithoutMarkers(file1Parse[key]),
+            newValue: file2Parse[key],
+            status: 'changed'
+          };
         }
         if (!_.isObject(file1Parse[key]) && _.isObject(file2Parse[key])) {
-          return { key, oldValue: file1Parse[key], newValue: getNodesWithoutMarkers(file2Parse[key]), status: 'changed' };
+          return {
+            key,
+            oldValue: file1Parse[key],
+            newValue: getNodesWithoutMarkers(file2Parse[key]),
+            status: 'changed'
+          };
         }
         return { key, value: getNodesWithMarkers(file1Parse[key], file2Parse[key]), status: 'nomod' };
       }
