@@ -12,7 +12,7 @@ const getValue = (value) => {
 const makeString = (diffTree, property = '') => {
   const result = diffTree.map((item) => {
     const propertyLine = `${property}.${item.key}`[0] === '.' ? `${property}.${item.key}`.slice(1) : `${property}.${item.key}`;
-    if (Array.isArray(item.value) && item.status === 'nomod') {
+    if (Array.isArray(item.value) && item.status === 'nested') {
       return `${makeString(item.value, propertyLine)}`;
     }
     switch (item.status) {
