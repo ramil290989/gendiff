@@ -1,13 +1,10 @@
 import _ from 'lodash';
 
 const valueToString = (itemValue, count) => {
-  if (Array.isArray(itemValue)) {
-    return makeString(itemValue, count);
-  }
+  const repCount = count + 4;
   if (_.isObject(itemValue)) {
-    count += 4;
-    const result = Object.keys(itemValue).map((key) => `${' '.repeat(count - 2)}${key}: ${valueToString(itemValue[key], count)}`).join('\n');
-    return `{\n${result}\n${' '.repeat(count - 6)}}`;
+    const result = Object.keys(itemValue).map((key) => `${' '.repeat(repCount - 2)}${key}: ${valueToString(itemValue[key], repCount)}`).join('\n');
+    return `{\n${result}\n${' '.repeat(repCount - 6)}}`;
   }
   return itemValue;
 };
@@ -15,9 +12,15 @@ const valueToString = (itemValue, count) => {
 const makeString = (diffTree, rep = 2) => {
   const count = rep + 4;
   const lines = diffTree.map((item) => {
-    const resultValue = valueToString(item.value, count);
-    const resultOldValue = valueToString(item.oldValue, count);
-    const resultNewValue = valueToString(item.newValue, count);
+    const resultValue = Array.isArray(item.value)
+      ? makeString(item.value, count)
+      : valueToString(item.value, count);
+    const resultOldValue = Array.isArray(item.oldValue)
+      ? makeString(item.oldValue, count)
+      : valueToString(item.oldValue, count);
+    const resultNewValue = Array.isArray(item.newValue)
+      ? makeString(item.newValue, count)
+      : valueToString(item.newValue, count);
     switch (item.status) {
       case 'nomod':
         return `${' '.repeat(rep)}  ${item.key}: ${resultValue}`;
