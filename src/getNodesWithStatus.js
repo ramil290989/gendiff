@@ -14,7 +14,7 @@ const getNodesWithStatus = (file1Parse, file2Parse) => {
       return { key, value: file1Parse[key], status: 'nomod' };
     }
     if (_.isObject(file1Parse[key]) && _.isObject(file2Parse[key])) {
-      return [ { key, value: getNodesWithStatus(file1Parse[key], file2Parse[key]), status: 'nested' } ];
+      return [{ key, value: getNodesWithStatus(file1Parse[key], file2Parse[key]), status: 'nested' }];
     }
     return {
       key,

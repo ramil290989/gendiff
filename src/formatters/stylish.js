@@ -6,9 +6,7 @@ const valueToString = (itemValue, count) => {
   }
   if (_.isObject(itemValue)) {
     count += 4;
-    const result = Object.keys(itemValue).map((key) => {
-      return `${' '.repeat(count - 2)}${key}: ${valueToString(itemValue[key], count)}`;
-    }).join('\n');
+    const result = Object.keys(itemValue).map((key) => `${' '.repeat(count - 2)}${key}: ${valueToString(itemValue[key], count)}`).join('\n');
     return `{\n${result}\n${' '.repeat(count - 6)}}`;
   }
   return itemValue;
@@ -30,9 +28,9 @@ const makeString = (diffTree, rep = 2) => {
       case 'added':
         return `${' '.repeat(rep)}+ ${item.key}: ${resultValue}`;
       case 'nested':
-        return `${' '.repeat(rep)}  ${item.key}: ${resultValue}`; 
+        return `${' '.repeat(rep)}  ${item.key}: ${resultValue}`;
       default:
-        throw new Error('неверный статус');;
+        throw new Error('неверный статус');
     }
   }).join('\n');
   const result = `{\n${lines}\n${' '.repeat(rep - 2)}}`;

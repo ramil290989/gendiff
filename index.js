@@ -1,8 +1,8 @@
+import fs from 'fs';
+import path from 'path';
 import getNodesWithStatus from './src/getNodesWithStatus.js';
 import parser from './src/parser.js';
 import getOutFormat from './src/getOutFormat.js';
-import fs from 'fs';
-import path from 'path';
 
 const genDiff = (file1, file2, format = 'stylish') => {
   const file1Content = fs.readFileSync(file1, 'utf-8');
