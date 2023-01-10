@@ -2,7 +2,7 @@ import stylish from './formatters/stylish.js';
 import plain from './formatters/plain.js';
 import json from './formatters/json.js';
 
-const getOutFormat = (diffTree, format) => {
+const treeFormatter = (diffTree, format) => {
   switch (format) {
     case 'stylish':
       return stylish(diffTree);
@@ -15,4 +15,4 @@ const getOutFormat = (diffTree, format) => {
   }
 };
 
-export default getOutFormat;
+export default treeFormatter;

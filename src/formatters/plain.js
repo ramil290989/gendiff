@@ -1,4 +1,4 @@
-const getValue = (value) => {
+const valueToString = (value) => {
   switch (typeof value) {
     case 'object':
       return value === null ? `${value}` : '[complex value]';
@@ -10,25 +10,24 @@ const getValue = (value) => {
 };
 
 const makeString = (diffTree, property = '') => {
-  const result = diffTree.map((item) => {
-    const propertyLine = `${property}.${item.key}`[0] === '.' ? `${property}.${item.key}`.slice(1) : `${property}.${item.key}`;
-    if (Array.isArray(item.value) && item.status === 'nested') {
-      return `${makeString(item.value, propertyLine)}`;
-    }
+  const lines = diffTree.map((item) => {
+    const propertyLine = property === '' ? item.key : `${property}.${item.key}`;
     switch (item.status) {
       case 'added':
-        return `Property '${propertyLine}' was added with value: ${getValue(item.value)}`;
+        return `Property '${propertyLine}' was added with value: ${valueToString(item.value)}`;
       case 'deleted':
         return `Property '${propertyLine}' was removed`;
       case 'changed':
-        return `Property '${propertyLine}' was updated. From ${getValue(item.oldValue)} to ${getValue(item.newValue)}`;
+        return `Property '${propertyLine}' was updated. From ${valueToString(item.oldValue)} to ${valueToString(item.newValue)}`;
+      case 'nested':
+        return `${makeString(item.value, propertyLine)}`;
       default:
         return '';
     }
   })
     .filter((item) => item !== '')
     .join('\n');
-  return result;
+  return lines;
 };
 
 const plain = (diffTree) => makeString(diffTree);

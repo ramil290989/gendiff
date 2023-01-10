@@ -1,43 +1,39 @@
 import _ from 'lodash';
 
-const valueToString = (itemValue, count) => {
-  const repCount = count + 4;
+const valueToString = (itemValue, repeatValue) => {
+  const repeatBeforeKey = repeatValue + 2;
+  const repeatForNested = repeatValue + 4;
+  const repeatAfterValue = repeatValue - 2;
   if (_.isObject(itemValue)) {
-    const result = Object.keys(itemValue).map((key) => `${' '.repeat(repCount - 2)}${key}: ${valueToString(itemValue[key], repCount)}`).join('\n');
-    return `{\n${result}\n${' '.repeat(repCount - 6)}}`;
+    const nestedLine = Object.keys(itemValue).map((key) => `${' '.repeat(repeatBeforeKey)}${key}: ${valueToString(itemValue[key], repeatForNested)}`)
+      .join('\n');
+    return `{\n${nestedLine}\n${' '.repeat(repeatAfterValue)}}`;
   }
   return itemValue;
 };
 
-const makeString = (diffTree, rep = 2) => {
-  const count = rep + 4;
+const makeString = (diffTree, repeatValue = 2) => {
+  const repeatBeforeKey = repeatValue;
+  const repeatForNested = repeatValue + 4;
+  const repeatAfterValue = repeatValue - 2;
   const lines = diffTree.map((item) => {
-    const resultValue = Array.isArray(item.value)
-      ? makeString(item.value, count)
-      : valueToString(item.value, count);
-    const resultOldValue = Array.isArray(item.oldValue)
-      ? makeString(item.oldValue, count)
-      : valueToString(item.oldValue, count);
-    const resultNewValue = Array.isArray(item.newValue)
-      ? makeString(item.newValue, count)
-      : valueToString(item.newValue, count);
     switch (item.status) {
       case 'nomod':
-        return `${' '.repeat(rep)}  ${item.key}: ${resultValue}`;
+        return `${' '.repeat(repeatBeforeKey)}  ${item.key}: ${valueToString(item.value, repeatForNested)}`;
       case 'changed':
-        return `${' '.repeat(rep)}- ${item.key}: ${resultOldValue}\n${' '.repeat(rep)}+ ${item.key}: ${resultNewValue}`;
+        return `${' '.repeat(repeatBeforeKey)}- ${item.key}: ${valueToString(item.oldValue, repeatForNested)}\n${' '.repeat(repeatBeforeKey)}+ ${item.key}: ${valueToString(item.newValue, repeatForNested)}`;
       case 'deleted':
-        return `${' '.repeat(rep)}- ${item.key}: ${resultValue}`;
+        return `${' '.repeat(repeatBeforeKey)}- ${item.key}: ${valueToString(item.value, repeatForNested)}`;
       case 'added':
-        return `${' '.repeat(rep)}+ ${item.key}: ${resultValue}`;
+        return `${' '.repeat(repeatBeforeKey)}+ ${item.key}: ${valueToString(item.value, repeatForNested)}`;
       case 'nested':
-        return `${' '.repeat(rep)}  ${item.key}: ${resultValue}`;
+        return `${' '.repeat(repeatBeforeKey)}  ${item.key}: ${makeString(item.value, repeatForNested)}`;
       default:
         throw new Error('неверный статус');
     }
-  }).join('\n');
-  const result = `{\n${lines}\n${' '.repeat(rep - 2)}}`;
-  return result;
+  })
+    .join('\n');
+  return `{\n${lines}\n${' '.repeat(repeatAfterValue)}}`;
 };
 
 const stylish = (diffTree) => makeString(diffTree);
