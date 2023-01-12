@@ -15,8 +15,8 @@ const getSpaces = (spaceCount, to) => {
       return ' '.repeat(spaceCount + afterValue);
     default:
       throw new Error('неверное значение для функции');
-  };
-}
+  }
+};
 
 const getOperator = (status) => {
   switch (status) {
@@ -48,22 +48,24 @@ const valueToString = (itemValue, spaceCount) => {
 const makeString = (diffTree, spaceCount = 2) => {
   const lines = diffTree.map((item) => {
     const spiceBeforeKey = getSpaces(spaceCount, 'beforeKey');
-    const key = item.key;
     const nestedSpaceCount = spaceCount + spacesToNested;
     switch (item.status) {
       case 'nomod':
       case 'added':
-      case 'deleted':
+      case 'deleted': {
         const operator = getOperator(item.status);
         const value = valueToString(item.value, nestedSpaceCount);
-        return `${spiceBeforeKey}${operator} ${key}: ${value}`;
-      case 'nested':
-        const nestedValue = makeString(item.value, nestedSpaceCount)
-        return `${spiceBeforeKey}  ${key}: ${nestedValue}`;
-      case 'changed':
+        return `${spiceBeforeKey}${operator} ${item.key}: ${value}`;
+      }
+      case 'nested': {
+        const nestedValue = makeString(item.value, nestedSpaceCount);
+        return `${spiceBeforeKey}  ${item.key}: ${nestedValue}`;
+      }
+      case 'changed': {
         const oldValue = valueToString(item.oldValue, nestedSpaceCount);
         const newValue = valueToString(item.newValue, nestedSpaceCount);
-        return `${spiceBeforeKey}- ${key}: ${oldValue}\n${spiceBeforeKey}+ ${key}: ${newValue}`;
+        return `${spiceBeforeKey}- ${item.key}: ${oldValue}\n${spiceBeforeKey}+ ${item.key}: ${newValue}`;
+      }
       default:
         throw new Error('неверный статус');
     }
