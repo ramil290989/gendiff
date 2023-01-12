@@ -1,8 +1,9 @@
 install: #первый запуск
 	npm ci
 
-test:
-	npm test
+build:
+	rm -rf dist
+	npm run build
 
 gendiff: 
 	node bin/gendiff.js
