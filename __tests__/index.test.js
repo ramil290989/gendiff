@@ -8,39 +8,23 @@ const file2YAML = './__fixtures__/file2-hex.yml';
 const stylish = fs.readFileSync('./__fixtures__/result-stylish', 'utf-8').trim();
 const plain = fs.readFileSync('./__fixtures__/result-plain', 'utf-8').trim();
 const json = fs.readFileSync('./__fixtures__/result-json', 'utf-8').trim();
-
-const toTest1 = [
-  [file1JSON, file2JSON, 'stylish'],
-  [file1JSON, file2YAML, 'stylish'],
-  [file1YAML, file2YAML, 'stylish'],
+const testArr = [
+  {testName: 'json, json', file1: file1JSON, file2: file2JSON},
+  {testName: 'yaml, json', file1: file1YAML, file2: file2JSON},
+  {testName: 'yaml, yaml', file1: file1YAML, file2: file2YAML},
 ];
 
-const toTest2 = [
-  [file1JSON, file2JSON, 'plain'],
-  [file1JSON, file2YAML, 'plain'],
-  [file1YAML, file2YAML, 'plain'],
-];
-
-const toTest3 = [
-  [file1JSON, file2JSON, 'json'],
-  [file1JSON, file2YAML, 'json'],
-  [file1YAML, file2YAML, 'json'],
-];
-
-describe('Test stylis', () => {
-  test.each(toTest1)(`stylish`, (...params) => {
-    expect(genDiff(...params)).toEqual(stylish);
-  });
+test.each(testArr)('genDiff($testName, stylish)', ({file1, file2}) => {
+  const resultStylish = genDiff(file1, file2, 'stylish');
+  expect(resultStylish).toBe(stylish);
 });
 
-describe('Test plain', () => {
-  test.each(toTest2)(`plain`, (...params) => {
-    expect(genDiff(...params)).toEqual(plain);
-  });
+test.each(testArr)('genDiff($testName, plain)', ({file1, file2}) => {
+  const resultPlain = genDiff(file1, file2, 'plain');
+  expect(resultPlain).toBe(plain);
 });
 
-describe('Test json', () => {
-  test.each(toTest3)(`json`, (...params) => {
-    expect(genDiff(...params)).toEqual(json);
-  });
+test.each(testArr)('genDiff($testName, json)', ({file1, file2}) => {
+  const resultJson = genDiff(file1, file2, 'json');
+  expect(resultJson).toBe(json);
 });
