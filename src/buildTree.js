@@ -14,7 +14,12 @@ const buildTree = (file1Parse, file2Parse) => {
       return { key, value: file2Parse[key], status: 'added' };
     }
     if (file1Parse[key] !== file2Parse[key]) {
-      return { key, oldValue: file1Parse[key], newValue: file2Parse[key], status: 'changed' };
+      return {
+        key,
+        oldValue: file1Parse[key],
+        newValue: file2Parse[key],
+        status: 'changed',
+      };
     }
     return { key, value: file1Parse[key], status: 'nomod' };
   });
