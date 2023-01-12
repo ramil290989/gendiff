@@ -1,6 +1,7 @@
 ### Hexlet tests and linter status:
 [![Actions Status](https://github.com/ramil290989/frontend-project-46/workflows/hexlet-check/badge.svg)](https://github.com/ramil290989/frontend-project-46/actions)
 <a href="https://codeclimate.com/github/ramil290989/frontend-project-46/maintainability"><img src="https://api.codeclimate.com/v1/badges/5daeba69d96022eca71f/maintainability" /></a>
+<a href="https://codeclimate.com/github/ramil290989/frontend-project-46/test_coverage"><img src="https://api.codeclimate.com/v1/badges/5daeba69d96022eca71f/test_coverage" /></a>
 <h1>Описание</h1>
 <p>Приложение <em>gendiff</em> сравнивает два файла в формате .json или .yaml и выводит на экран их различия. Вывести на экран результат работы приложения можно в трех разных форматах.</p>
 <h1>Установка</h1>
