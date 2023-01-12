@@ -14,17 +14,11 @@ const testArr = [
   { testName: 'yaml, yaml', file1: file1YAML, file2: file2YAML },
 ];
 
-test.each(testArr)('genDiff($testName, stylish)', ({ file1, file2 }) => {
+test.each(testArr)(`genDiff($testName)`, ({ file1, file2 }) => {
   const resultStylish = genDiff(file1, file2, 'stylish');
-  expect(resultStylish).toBe(stylish);
-});
-
-test.each(testArr)('genDiff($testName, plain)', ({ file1, file2 }) => {
   const resultPlain = genDiff(file1, file2, 'plain');
-  expect(resultPlain).toBe(plain);
-});
-
-test.each(testArr)('genDiff($testName, json)', ({ file1, file2 }) => {
   const resultJson = genDiff(file1, file2, 'json');
+  expect(resultStylish).toBe(stylish);
+  expect(resultPlain).toBe(plain);
   expect(resultJson).toBe(json);
 });

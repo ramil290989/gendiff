@@ -54,12 +54,10 @@ const makeString = (diffTree, spaceCount = 2) => {
       case 'added':
       case 'deleted': {
         const operator = getOperator(item.status);
-        const value = valueToString(item.value, nestedSpaceCount);
-        return `${spiceBeforeKey}${operator} ${item.key}: ${value}`;
+        return `${spiceBeforeKey}${operator} ${item.key}: ${valueToString(item.value, nestedSpaceCount)}`;
       }
       case 'nested': {
-        const nestedValue = makeString(item.value, nestedSpaceCount);
-        return `${spiceBeforeKey}  ${item.key}: ${nestedValue}`;
+        return `${spiceBeforeKey}  ${item.key}: ${makeString(item.value, nestedSpaceCount)}`;
       }
       case 'changed': {
         const oldValue = valueToString(item.oldValue, nestedSpaceCount);
@@ -69,8 +67,7 @@ const makeString = (diffTree, spaceCount = 2) => {
       default:
         throw new Error('неверный статус');
     }
-  })
-    .join('\n');
+  }).join('\n');
   return `{\n${lines}\n${getSpaces(spaceCount, 'afterValue')}}`;
 };
 
