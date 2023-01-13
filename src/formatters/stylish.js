@@ -7,14 +7,13 @@ const indentsCalcValues = {
   afterValue: -2,
 };
 
-const getIndents = (indent) => {
-  return {
+const getIndents = (indent) => ({
     toNested: indent + indentsCalcValues.toNested,
     beforeKey: ' '.repeat(indent + indentsCalcValues.beforeKey),
     beforeNestedKey: ' '.repeat(indent + indentsCalcValues.beforeNestedKey),
     afterValue: ' '.repeat(indent + indentsCalcValues.afterValue),
-  };
-};
+  });
+
 
 const getOperator = (status) => {
   switch (status) {
@@ -44,7 +43,7 @@ const valueToString = (itemValue, indentValue) => {
 };
 
 const makeString = (diffTree, indentValue = 2) => {
-  const indents = getIndents(indentValue)
+  const indents = getIndents(indentValue);
   const lines = diffTree.map((item) => {
     switch (item.status) {
       case 'nomod':

@@ -1,13 +1,9 @@
 import fs from 'fs';
 import genDiff from '../index.js';
 
-const getFile = (path, fileName) => {
-  return `${path}${fileName}`;
-};
+const getFile = (path, fileName) => `${path}${fileName}`;
 
-const getResultFile = (path, fileName) => {
-  return fs.readFileSync(getFile(path, fileName), 'utf-8').trim();
-};
+const getResultFile = (path, fileName) => fs.readFileSync(getFile(path, fileName), 'utf-8').trim();
 
 const testArr = [
   {
@@ -32,5 +28,5 @@ const testArr = [
 
 test.each(testArr)('genDiff($testName, $format)', ({ file1, file2, format }) => {
   const result = genDiff(file1, file2, format);
-  expect(result).toBe(getResultFile('./__fixtures__/', 'result-' + format));
+  expect(result).toBe(getResultFile('./__fixtures__/', `result-${format}`));
 });
