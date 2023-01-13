@@ -8,12 +8,11 @@ const indentsCalcValues = {
 };
 
 const getIndents = (indent) => ({
-    toNested: indent + indentsCalcValues.toNested,
-    beforeKey: ' '.repeat(indent + indentsCalcValues.beforeKey),
-    beforeNestedKey: ' '.repeat(indent + indentsCalcValues.beforeNestedKey),
-    afterValue: ' '.repeat(indent + indentsCalcValues.afterValue),
-  });
-
+  toNested: indent + indentsCalcValues.toNested,
+  beforeKey: ' '.repeat(indent + indentsCalcValues.beforeKey),
+  beforeNestedKey: ' '.repeat(indent + indentsCalcValues.beforeNestedKey),
+  afterValue: ' '.repeat(indent + indentsCalcValues.afterValue),
+});
 
 const getOperator = (status) => {
   switch (status) {
