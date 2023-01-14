@@ -1,32 +1,28 @@
 import fs from 'fs';
+import path from 'path';
 import genDiff from '../index.js';
-
-const getFile = (path, fileName) => `${path}${fileName}`;
-
-const getResultFile = (path, fileName) => fs.readFileSync(getFile(path, fileName), 'utf-8').trim();
 
 const testArr = [
   {
-    testName: 'json, json',
     format: 'stylish',
-    file1: getFile('./__fixtures__/', 'file1-hex.json'),
-    file2: getFile('./__fixtures__/', 'file2-hex.json'),
+    file1Type: 'json',
+    file2Type: 'json',
   },
   {
-    testName: 'yaml, json',
     format: 'plain',
-    file1: getFile('./__fixtures__/', 'file1-hex.yml'),
-    file2: getFile('./__fixtures__/', 'file2-hex.json'),
+    file1Type: 'yml',
+    file2Type: 'json',
   },
   {
-    testName: 'yaml, yaml',
     format: 'json',
-    file1: getFile('./__fixtures__/', 'file1-hex.yml'),
-    file2: getFile('./__fixtures__/', 'file2-hex.yml'),
+    file1Type: 'yml',
+    file2Type: 'yml',
   },
 ];
 
-test.each(testArr)('genDiff($testName, $format)', ({ file1, file2, format }) => {
+test.each(testArr)('genDiff($file1Type, $file2Type, $format)', ({ file1Type, file2Type, format }) => {
+  const file1 = path.resolve(`./__fixtures__/file1-hex.${file1Type}`);
+  const file2 = path.resolve(`./__fixtures__/file2-hex.${file2Type}`);
   const result = genDiff(file1, file2, format);
-  expect(result).toBe(getResultFile('./__fixtures__/', `result-${format}`));
+  expect(result).toBe(fs.readFileSync(path.resolve(`./__fixtures__/result-${format}`), 'utf-8').trim());
 });

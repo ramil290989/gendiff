@@ -1,17 +1,17 @@
 import _ from 'lodash';
 
 const indentsCalcValues = {
-  toNested: 4,
-  beforeKey: 0,
-  beforeNestedKey: 2,
-  afterValue: -2,
+  calcToNested: 4,
+  calcBeforeKey: 0,
+  calcBeforeNestedKey: 2,
+  calcAfterValue: -2,
 };
 
 const getIndents = (indent) => ({
-  toNested: indent + indentsCalcValues.toNested,
-  beforeKey: ' '.repeat(indent + indentsCalcValues.beforeKey),
-  beforeNestedKey: ' '.repeat(indent + indentsCalcValues.beforeNestedKey),
-  afterValue: ' '.repeat(indent + indentsCalcValues.afterValue),
+  toNested: indent + indentsCalcValues.calcToNested,
+  beforeKey: ' '.repeat(indent + indentsCalcValues.calcBeforeKey),
+  beforeNestedKey: ' '.repeat(indent + indentsCalcValues.calcBeforeNestedKey),
+  afterValue: ' '.repeat(indent + indentsCalcValues.calcAfterValue),
 });
 
 const getOperator = (status) => {
