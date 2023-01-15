@@ -2,6 +2,9 @@ import fs from 'fs';
 import path from 'path';
 import genDiff from '../index.js';
 
+const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
+const readFixture = (filepath) => fs.readFileSync(filepath, 'utf-8');
+
 const testArr = [
   {
     format: 'stylish',
@@ -21,8 +24,9 @@ const testArr = [
 ];
 
 test.each(testArr)('genDiff($file1Type, $file2Type, $format)', ({ file1Type, file2Type, format }) => {
-  const file1 = path.resolve(`./__fixtures__/file1-hex.${file1Type}`);
-  const file2 = path.resolve(`./__fixtures__/file2-hex.${file2Type}`);
-  const result = genDiff(file1, file2, format);
-  expect(result).toBe(fs.readFileSync(path.resolve(`./__fixtures__/result-${format}`), 'utf-8').trim());
+  const filepath1 = getFixturePath(`file1-hex.${file1Type}`);
+  const filepath2 = getFixturePath(`file2-hex.${file2Type}`);
+  const resultFilepath = getFixturePath(`result-${format}`);
+  const result = genDiff(filepath1, filepath2, format);
+  expect(result).toBe(readFixture(resultFilepath).trim());
 });
